@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+
+  teacherAllocations TeacherAllocation[]
+  assignments        Assignment[] @relation("TeacherAssignments")
+}
+
+model Subject {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  code  String @unique
+
+  teacherAllocations TeacherAllocation[]
+  assignments Assignment[]
+}
+
+model Faculty {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  teacherAllocations TeacherAllocation[]
+  assignments Assignment[]
+}
+
+model Semester {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  teacherAllocations TeacherAllocation[]
+  assignments Assignment[]
+}
+
+model TeacherAllocation {
+  id         Int @id @default(autoincrement())
+
+  teacherId  Int
+  subjectId  Int
+  facultyId  Int
+  semesterId Int
+
+  teacher  User    @relation(fields: [teacherId], references: [id])
+  subject  Subject @relation(fields: [subjectId], references: [id])
+  faculty  Faculty @relation(fields: [facultyId], references: [id])
+  semester Semester @relation(fields: [semesterId], references: [id])
+
+  @@unique([teacherId, subjectId, facultyId, semesterId])
+}
+
+model Assignment {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  dueDate     DateTime
+  createdAt   DateTime @default(now())
+
+  teacherId   Int
+  subjectId   Int
+  facultyId   Int
+  semesterId  Int
+
+  teacher  User    @relation("TeacherAssignments", fields: [teacherId], references: [id])
+  subject  Subject @relation(fields: [subjectId], references: [id])
+  faculty  Faculty @relation(fields: [facultyId], references: [id])
+  semester Semester @relation(fields: [semesterId], references: [id])
+}
