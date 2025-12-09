@@ -10,7 +10,7 @@ const facultyController = new FacultyController();
 router.post(
   "/",
   authMiddleware,
-  allowRoles("ADMIN"),
+  allowRoles("admin"),
   (req: Request, res: Response) => {
     facultyController.createFaculty(req, res);
   }
@@ -20,7 +20,7 @@ router.post(
 router.get(
   "/",
   authMiddleware,
-  allowRoles("ADMIN", "TEACHER"),
+  allowRoles("admin", "teacher"),
   (req: Request, res: Response) => {
     facultyController.getAllFaculties(req, res);
   }

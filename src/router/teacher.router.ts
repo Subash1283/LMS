@@ -8,21 +8,21 @@ import { allowRoles } from "../middleware/role.middleware";
 const router = express.Router();
 const allocationController = new TeacherAllocationController();
 
-// CREATE allocation (Admin only)
+// CREATE allocation (admin only)
 router.post(
   "/",
   authMiddleware,
-  allowRoles("ADMIN"),
+  allowRoles("admin"),
   (req: Request, res: Response) => {
     allocationController.createAllocation(req, res);
   }
 );
 
-// GET all allocations (Admin + Teacher)
+// GET all allocations (admin + Teacher)
 router.get(
   "/",
   authMiddleware,
-  allowRoles("ADMIN", "TEACHER"),
+  allowRoles("admin", "teacher"),
   (req: Request, res: Response) => {
     allocationController.getAllAllocations(req, res);
   }

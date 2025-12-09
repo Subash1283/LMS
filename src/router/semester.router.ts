@@ -12,7 +12,7 @@ const semesterController = new SemesterController();
 router.post(
   "/",
   authMiddleware,
-  allowRoles("ADMIN"),
+  allowRoles("admin"),
   (req: Request, res: Response) => {
     semesterController.createSemester(req, res);
   }
@@ -22,7 +22,7 @@ router.post(
 router.get(
   "/",
   authMiddleware,
-  allowRoles("ADMIN", "TEACHER", "STUDENT"),
+  allowRoles("admin", "teacher", "student"),
   (req: Request, res: Response) => {
     semesterController.getAllSemesters(req, res);
   }

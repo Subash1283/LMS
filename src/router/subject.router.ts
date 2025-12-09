@@ -6,21 +6,21 @@ import { allowRoles } from "../middleware/role.middleware";
 const router = express.Router();
 const subjectController = new SubjectController();
 
-// CREATE Subject (Admin only)
+// CREATE Subject (admin only)
 router.post(
   "/",
   authMiddleware,
-  allowRoles("ADMIN"),
+  allowRoles("admin"),
   (req: Request, res: Response) => {
     subjectController.createSubject(req, res);
   }
 );
 
-// GET all subjects (Admin + Teacher + Student)
+// GET all subjects (admin + Teacher + Student)
 router.get(
   "/",
   authMiddleware,
-  allowRoles("ADMIN", "TEACHER", "STUDENT"),
+  allowRoles("admin", "teacher", "student"),
   (req: Request, res: Response) => {
     subjectController.getAllSubjects(req, res);
   }
