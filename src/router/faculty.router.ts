@@ -20,7 +20,7 @@ router.post(
 router.get(
   "/",
   authMiddleware,
-  allowRoles("ADMIN", "TEA"),
+  allowRoles("ADMIN", "TEACHER"),
   (req: Request, res: Response) => {
     facultyController.getAllFaculties(req, res);
   }
