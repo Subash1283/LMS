@@ -1,6 +1,6 @@
 import express,{Request,Response,NextFunction} from "express";
 import { UserController } from "../controller/user.controller";
-
+import { Role } from "../generated/prisma";
 const router = express.Router();
 const userController = new UserController();
 
