@@ -8,14 +8,14 @@ export class AssignmentController {
     this.assignmentService = new AssignmentService();
   }
 
-  // CREATE ASSIGNMENT
+
   async createAssignment(req: Request, res: Response) {
     try {
+      const loggedInUserId = (req as any).user.id;
       const {
         title,
         description,
         dueDate,
-        teacherId,
         subjectId,
         facultyId,
         semesterId,
@@ -25,22 +25,23 @@ export class AssignmentController {
         title,
         description,
         dueDate: new Date(dueDate),
-        teacherId,
+        teacherId: loggedInUserId,
         subjectId,
         facultyId,
         semesterId,
-      });
+      }, loggedInUserId);
 
       res.status(201).json({
         message: "Assignment created successfully",
         data: newAssignment,
       });
     } catch (error) {
-      res.status(400).json({ message: "Failed to create assignment", error });
+      console.error("Error creating assignment:", error);
+      res.status(400).json({ message: "Failed to create assignment", error: error instanceof Error ? error.message : String(error) });
     }
   }
 
-  // GET ALL
+  
   async getAllAssignments(req: Request, res: Response) {
     const assignments = await this.assignmentService.getAllAssignments();
 
@@ -50,7 +51,7 @@ export class AssignmentController {
     });
   }
 
-  // GET BY ID
+
   async getAssignmentById(req: Request, res: Response) {
     const id = parseInt(req.params.id!);
 
@@ -66,7 +67,7 @@ export class AssignmentController {
     });
   }
 
-  // UPDATE ASSIGNMENT
+ 
   async updateAssignment(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id!);
@@ -108,9 +109,9 @@ export class AssignmentController {
   // DELETE ASSIGNMENT
   async deleteAssignment(req: Request, res: Response) {
     const id = parseInt(req.params.id!);
+    const loggedInUserId = (req as any).user.id;
 
-    await this.assignmentService.deleteAssignment(id);
-
+    await this.assignmentService.deleteAssignment(id, loggedInUserId);
     res.status(200).json({ message: "Assignment deleted successfully" });
   }
 }

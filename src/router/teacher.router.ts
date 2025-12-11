@@ -12,7 +12,7 @@ const allocationController = new TeacherAllocationController();
 router.post(
   "/",
   authMiddleware,
-  allowRoles("admin"),
+  allowRoles("admin", "teacher"),
   (req: Request, res: Response) => {
     allocationController.createAllocation(req, res);
   }

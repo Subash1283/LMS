@@ -5,47 +5,58 @@ const prisma = new PrismaClient();
 
 export class AssignmentService {
 
-  // CREATE
-  async insertAssignment(
-    assignment: Omit<Assignment, "id">
-  ): Promise<Assignment> {
-    const result = await prisma.assignment.create({
-      data: {
-        title: assignment.title!,
-        description: assignment.description!,
-        dueDate: assignment.dueDate!,
-        teacherId: assignment.teacherId!,
-        subjectId: assignment.subjectId!,
-        facultyId: assignment.facultyId!,
-        semesterId: assignment.semesterId!,
+  // CREATE ASSIGNMENT
+  async insertAssignment(data: any, loggedInUserId: number): Promise<Assignment> {
+    // 1. Get logged-in user
+    const user = await prisma.user.findUnique({ where: { id: loggedInUserId } });
+    if (!user) throw new Error("User not found");
+
+    if (user.role !== "TEACHER") throw new Error("Only teachers can create assignments");
+
+    if (data.teacherId !== loggedInUserId) throw new Error("You can only create assignments for yourself");
+
+    const teacher = await prisma.user.findUnique({ where: { id: data.teacherId } });
+    if (!teacher || teacher.role !== "TEACHER") throw new Error("Invalid teacherId");
+
+    // 2. Check teacher allocation
+    const { subjectId, semesterId, facultyId } = data;
+    if (!subjectId || !semesterId || !facultyId) {
+      throw new Error("subjectId, semesterId, facultyId are required");
+    }
+
+    const allocation = await prisma.teacherAllocation.findFirst({
+      where: {
+        teacherId: loggedInUserId,
+        subjectId: Number(subjectId),
+        semesterId: Number(semesterId),
+        facultyId: Number(facultyId),
       },
     });
-    return result;
+
+    if (!allocation) {
+      throw new Error(
+        "You are not assigned to this subject/semester/faculty. Cannot create assignment."
+      );
+    }
+
+    // 3. Create assignment
+    return prisma.assignment.create({ data });
   }
 
-  // READ ALL
+  // GET ALL ASSIGNMENTS
   async getAllAssignments(): Promise<Assignment[]> {
-    const result = await prisma.assignment.findMany();
-    return result;
+    return prisma.assignment.findMany();
   }
 
-  // READ BY ID
+  // GET BY ID
   async getAssignmentById(id: number): Promise<Assignment> {
-    const result = await prisma.assignment.findUnique({
-      where: { id },
-    });
-    return result!;
+    const assignment = await prisma.assignment.findUnique({ where: { id } });
+    if (!assignment) throw new Error("Assignment not found");
+    return assignment;
   }
 
-  // DELETE
-  async deleteAssignment(id: number): Promise<void> {
-    await prisma.assignment.delete({
-      where: { id },
-    });
-  }
-
-  // UPDATE
-async updateAssignment(
+  // UPDATE ASSIGNMENT
+ async updateAssignment(
   id: number,
   assignment: Partial<Omit<Assignment, "id">>
 ): Promise<Assignment> {
@@ -65,5 +76,14 @@ async updateAssignment(
   });
 }
 
+  // DELETE ASSIGNMENT
+  async deleteAssignment(id: number, loggedInUserId: number): Promise<void> {
+    const assignment = await prisma.assignment.findUnique({ where: { id } });
+    if (!assignment) throw new Error("Assignment not found");
 
+    if (assignment.teacherId !== loggedInUserId)
+      throw new Error("You can only delete your own assignment");
+
+    await prisma.assignment.delete({ where: { id } });
+  }
 }
