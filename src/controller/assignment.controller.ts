@@ -30,7 +30,6 @@ export class AssignmentController {
         facultyId,
         semesterId,
       }, loggedInUserId);
-
       res.status(201).json({
         message: "Assignment created successfully",
         data: newAssignment,
@@ -50,7 +49,6 @@ export class AssignmentController {
       data: assignments,
     });
   }
-
 
   async getAssignmentById(req: Request, res: Response) {
     const id = parseInt(req.params.id!);

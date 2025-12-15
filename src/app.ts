@@ -8,6 +8,8 @@ import Faculties from "./router/faculty.router";
 import Semester from "./router/semester.router";
 import TeacherAllocation from "./router/teacher.router";
 import Subject from "./router/subject.router";
+import assignmentsubmit from "./router/assignment.submission.router"
+import  StudentAllocation  from "./router/student.router";
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ app.use("/faculty", Faculties);
 app.use("/semester", Semester);
 app.use("/teacher", TeacherAllocation);
 app.use("/subject", Subject);  
+app.use("/assignmentsubmit",assignmentsubmit);
+app.use("/student",StudentAllocation); 
 
 app.use(errorHandler);
 

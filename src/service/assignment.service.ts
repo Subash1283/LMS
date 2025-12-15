@@ -8,12 +8,12 @@ export class AssignmentService {
   // CREATE ASSIGNMENT
   async insertAssignment(data: any, loggedInUserId: number): Promise<Assignment> {
     // 1. Get logged-in user
-    const user = await prisma.user.findUnique({ where: { id: loggedInUserId } });
-    if (!user) throw new Error("User not found");
+    // const user = await prisma.user.findUnique({ where: { id: loggedInUserId } });
+    // if (!user) throw new Error("User not found");
 
-    if (user.role !== "TEACHER") throw new Error("Only teachers can create assignments");
+    // if (user.role !== "TEACHER") throw new Error("Only teachers can create assignments");
 
-    if (data.teacherId !== loggedInUserId) throw new Error("You can only create assignments for yourself");
+    // if (data.teacherId !== loggedInUserId) throw new Error("You can only create assignments for yourself");
 
     const teacher = await prisma.user.findUnique({ where: { id: data.teacherId } });
     if (!teacher || teacher.role !== "TEACHER") throw new Error("Invalid teacherId");

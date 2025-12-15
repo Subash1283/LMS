@@ -14,6 +14,13 @@ enum Role {
   STUDENT
 }
 
+enum NoticeType {
+  GENERAL
+  EXAM
+  URGENT
+  EVENT
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String
@@ -22,17 +29,26 @@ model User {
   role      Role
   createdAt DateTime @default(now())
 
+  // Teacher
   teacherAllocations TeacherAllocation[]
-  assignments        Assignment[] @relation("TeacherAssignments")
+  assignments        Assignment[]        @relation("TeacherAssignments")
+
+  // Student
+  studentAllocations StudentAllocation[]
+  submissions        AssignmentSubmission[]
+
+  // Notices
+  notices Notice[] @relation("UserNotices")
 }
 
 model Subject {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  code  String @unique
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  code String @unique
 
   teacherAllocations TeacherAllocation[]
-  assignments Assignment[]
+  studentAllocations StudentAllocation[]
+  assignments        Assignment[]
 }
 
 model Faculty {
@@ -40,7 +56,9 @@ model Faculty {
   name String @unique
 
   teacherAllocations TeacherAllocation[]
-  assignments Assignment[]
+  studentAllocations StudentAllocation[]
+  assignments        Assignment[]
+  notices            Notice[]
 }
 
 model Semester {
@@ -48,23 +66,41 @@ model Semester {
   name String @unique
 
   teacherAllocations TeacherAllocation[]
-  assignments Assignment[]
+  studentAllocations StudentAllocation[]
+  assignments        Assignment[]
+  notices            Notice[]
 }
 
 model TeacherAllocation {
-  id         Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   teacherId  Int
   subjectId  Int
   facultyId  Int
   semesterId Int
 
-  teacher  User    @relation(fields: [teacherId], references: [id])
-  subject  Subject @relation(fields: [subjectId], references: [id])
-  faculty  Faculty @relation(fields: [facultyId], references: [id])
+  teacher  User     @relation(fields: [teacherId], references: [id])
+  subject  Subject  @relation(fields: [subjectId], references: [id])
+  faculty  Faculty  @relation(fields: [facultyId], references: [id])
   semester Semester @relation(fields: [semesterId], references: [id])
 
   @@unique([teacherId, subjectId, facultyId, semesterId])
+}
+
+model StudentAllocation {
+  id Int @id @default(autoincrement())
+
+  studentId  Int
+  subjectId  Int
+  facultyId  Int
+  semesterId Int
+
+  student  User     @relation(fields: [studentId], references: [id])
+  subject  Subject  @relation(fields: [subjectId], references: [id])
+  faculty  Faculty  @relation(fields: [facultyId], references: [id])
+  semester Semester @relation(fields: [semesterId], references: [id])
+
+  @@unique([studentId, subjectId, facultyId, semesterId])
 }
 
 model Assignment {
@@ -74,13 +110,49 @@ model Assignment {
   dueDate     DateTime
   createdAt   DateTime @default(now())
 
-  teacherId   Int
-  subjectId   Int
-  facultyId   Int
-  semesterId  Int
+  teacherId  Int
+  subjectId  Int
+  facultyId  Int
+  semesterId Int
 
-  teacher  User    @relation("TeacherAssignments", fields: [teacherId], references: [id])
-  subject  Subject @relation(fields: [subjectId], references: [id])
-  faculty  Faculty @relation(fields: [facultyId], references: [id])
+  teacher  User     @relation("TeacherAssignments", fields: [teacherId], references: [id])
+  subject  Subject  @relation(fields: [subjectId], references: [id])
+  faculty  Faculty  @relation(fields: [facultyId], references: [id])
   semester Semester @relation(fields: [semesterId], references: [id])
+
+  submissions AssignmentSubmission[]
+}
+
+model AssignmentSubmission {
+  id          Int      @id @default(autoincrement())
+  content     String
+  submittedAt DateTime @default(now())
+
+  assignmentId Int
+  studentId    Int
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id])
+  student    User       @relation(fields: [studentId], references: [id])
+
+  @@unique([assignmentId, studentId])
+}
+
+model Notice {
+  id      Int        @id @default(autoincrement())
+  title   String
+  content String
+  type    NoticeType
+
+  createdById Int
+  createdBy   User @relation("UserNotices", fields: [createdById], references: [id])
+
+  facultyId  Int?
+  semesterId Int
+
+  faculty  Faculty? @relation(fields: [facultyId], references: [id])
+  semester Semester @relation(fields: [semesterId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([facultyId, semesterId])
 }

@@ -1,0 +1,30 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const errorhandler_1 = require("./middleware/errorhandler");
+const assignment_router_1 = __importDefault(require("./router/assignment.router"));
+const user_router_1 = __importDefault(require("./router/user.router"));
+const faculty_router_1 = __importDefault(require("./router/faculty.router"));
+const semester_router_1 = __importDefault(require("./router/semester.router"));
+const teacher_router_1 = __importDefault(require("./router/teacher.router"));
+const subject_router_1 = __importDefault(require("./router/subject.router"));
+const assignment_submission_router_1 = __importDefault(require("./router/assignment.submission.router"));
+const student_router_1 = __importDefault(require("./router/student.router"));
+dotenv_1.default.config();
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
+app.use("/user", user_router_1.default);
+app.use("/assignment", assignment_router_1.default);
+app.use("/faculty", faculty_router_1.default);
+app.use("/semester", semester_router_1.default);
+app.use("/teacher", teacher_router_1.default);
+app.use("/subject", subject_router_1.default);
+app.use("/assignmentsubmit", assignment_submission_router_1.default);
+app.use("/student", student_router_1.default);
+app.use(errorhandler_1.errorHandler);
+exports.default = app;
+//# sourceMappingURL=app.js.map

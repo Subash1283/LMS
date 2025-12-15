@@ -1,0 +1,3 @@
+- [x] Run `prisma generate` to initialize the Prisma client
+- [x] Fix the import in src/service/assignment.submission.service.ts to use "../generated/prisma"
+- [x] Fix the import in src/service/student.service.ts to use "../generated/prisma"

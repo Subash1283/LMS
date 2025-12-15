@@ -1,0 +1,1 @@
+{"version":3,"file":"faculty.controller.d.ts","sourceRoot":"","sources":["../../src/controller/faculty.controller.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAC5C,OAAO,EAAE,cAAc,EAAE,MAAM,4BAA4B,CAAC;AAE5D,qBAAa,iBAAiB;IAC5B,cAAc,iBAAwB;IAEhC,aAAa,CAAC,GAAG,EAAE,OAAO,EAAE,GAAG,EAAE,QAAQ;IAMzC,eAAe,CAAC,GAAG,EAAE,OAAO,EAAE,GAAG,EAAE,QAAQ;CAIlD"}

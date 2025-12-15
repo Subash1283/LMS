@@ -1,0 +1,1 @@
+{"version":3,"file":"assignment.submission.model.d.ts","sourceRoot":"","sources":["../../src/model/assignment.submission.model.ts"],"names":[],"mappings":"AAEA,qBAAa,yBAAyB;IAGpC,EAAE,CAAC,EAAE,MAAM,CAAC;IAGZ,OAAO,EAAG,MAAM,CAAC;IAGjB,YAAY,EAAG,MAAM,CAAC;IAGtB,SAAS,EAAG,MAAM,CAAC;gBAGjB,EAAE,EAAE,MAAM,EACV,OAAO,EAAE,MAAM,EACf,YAAY,EAAE,MAAM,EACpB,SAAS,EAAE,MAAM;CAOpB"}
